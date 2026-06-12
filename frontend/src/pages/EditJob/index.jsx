@@ -24,7 +24,7 @@ class EditJob extends Component {
   getJobDetails = async () => {
     const jobId = window.location.pathname.split('/')[2]
 
-    const data = await apiRequest(`/api/jobs/${jobId}`)
+    const data = await apiRequest(`/jobs/${jobId}`)
 
     this.setState({
       title: data.title,

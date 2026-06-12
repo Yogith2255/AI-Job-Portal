@@ -1,1 +1,1 @@
-export const API_URL = 'https://ai-job-portal-backend-f0zm.onrender.com'
+export const API_URL = 'https://ai-job-portal-backend-f0zm.onrender.com/api'

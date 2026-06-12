@@ -30,7 +30,7 @@ class Login extends Component {
 
     const {email, password} = this.state
 
-    const data = await apiRequest('/api/auth/login', {
+    const data = await apiRequest('/auth/login', {
       method: 'POST',
       body: JSON.stringify({
         email,

@@ -36,7 +36,7 @@ class Register extends Component {
 
     const {name, email, password, role} = this.state
 
-    const data = await apiRequest('/api/auth/register', {
+    const data = await apiRequest('/auth/register', {
       method: 'POST',
       body: JSON.stringify({
         name,

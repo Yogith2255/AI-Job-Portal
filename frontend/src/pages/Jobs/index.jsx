@@ -25,7 +25,7 @@ class Jobs extends Component {
       experience,
     } = this.state
 
-    let url = '/api/jobs?'
+    let url = '/jobs?'
 
     if (search) {
       url += `search=${search}&`

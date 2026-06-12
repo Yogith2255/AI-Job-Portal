@@ -31,7 +31,7 @@ class Applicants extends Component {
     status,
   ) => {
     const response = await apiRequest(
-      `/api/applications/status/${applicationId}`,
+      `/applications/status/${applicationId}`,
       {
         method: 'PUT',
         body: JSON.stringify({

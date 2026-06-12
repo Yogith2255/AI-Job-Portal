@@ -17,7 +17,7 @@ class JobDetails extends Component {
     const {jobDetails} = this.state
 
     const data = await apiRequest(
-      '/api/applications/apply',
+      '/applications/apply',
       {
         method: 'POST',
         body: JSON.stringify({
