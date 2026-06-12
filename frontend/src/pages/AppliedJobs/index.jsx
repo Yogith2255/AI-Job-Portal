@@ -15,7 +15,7 @@ class AppliedJobs extends Component {
 
   getAppliedJobs = async () => {
     const data = await apiRequest(
-      '/applications/my-applications',
+      '/api/applications/my-applications',
     )
 
     this.setState({

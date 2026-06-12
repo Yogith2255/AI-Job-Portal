@@ -26,7 +26,7 @@ class Dashboard extends Component {
 
   getDashboardStats = async () => {
     const data = await apiRequest(
-      '/dashboard/stats',
+      '/api/dashboard/stats',
     )
 
     this.setState({

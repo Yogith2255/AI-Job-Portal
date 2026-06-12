@@ -31,7 +31,7 @@ class Applicants extends Component {
     status,
   ) => {
     const response = await apiRequest(
-      `/applications/status/${applicationId}`,
+      `/api/applications/status/${applicationId}`,
       {
         method: 'PUT',
         body: JSON.stringify({
@@ -47,6 +47,7 @@ class Applicants extends Component {
 
   renderApplicants = () => {
     const {applicantsList} = this.state
+
 
     if (applicantsList.length === 0) {
       return (
@@ -68,7 +69,7 @@ class Applicants extends Component {
 
 {applicant.resume_url && (
   <a
-  href={`http://localhost:5000${applicant.resume_url}`}
+  href={`https://ai-job-portal-backend-f0zm.onrender.com${applicant.resume_url}`}
   target="_blank"
   rel="noreferrer"
   className="resume-btn"

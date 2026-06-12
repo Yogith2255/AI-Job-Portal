@@ -31,7 +31,7 @@ class Chatbot extends Component {
 
     try {
       const data = await apiRequest(
-        '/chatbot',
+        '/api/chatbot',
         {
           method: 'POST',
           body: JSON.stringify({

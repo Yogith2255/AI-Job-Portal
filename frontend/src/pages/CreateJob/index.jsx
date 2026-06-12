@@ -29,7 +29,7 @@ class CreateJob extends Component {
     formData.append('logo', file)
 
     const data = await apiRequest(
-      '/upload/logo',
+      '/api/upload/logo',
       {
         method: 'POST',
         body: formData,

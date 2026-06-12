@@ -16,7 +16,7 @@ class Profile extends Component {
   getProfile = async () => {
   try {
     const data = await apiRequest(
-      '/auth/profile',
+      '/api/auth/profile',
     )
 
     console.log('PROFILE DATA:', data)
