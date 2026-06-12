@@ -1,7 +1,20 @@
 const Database = require('better-sqlite3')
 const path = require('path')
+const fs = require('fs')
 
-const dbPath = path.join(__dirname, '../database/jobportal.db')
+const dbDir = path.join(
+  __dirname,
+  '../database',
+)
+
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, {recursive: true})
+}
+
+const dbPath = path.join(
+  dbDir,
+  'jobportal.db',
+)
 
 const db = new Database(dbPath)
 
