@@ -96,7 +96,7 @@ class JobDetails extends Component {
             <div className="job-details-header">
               {jobDetails.company_logo && (
                 <img
-                  src={`http://localhost:5000${jobDetails.company_logo}`}
+                  src={`https://ai-job-portal-backend-f0zm.onrender.com${jobDetails.company_logo}`}
                   alt={
                     jobDetails.company
                   }

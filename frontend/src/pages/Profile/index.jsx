@@ -44,7 +44,7 @@ class Profile extends Component {
       localStorage.getItem('jwt_token')
 
     const response = await fetch(
-      'http://localhost:5000/api/profile/upload-image',
+      'https://ai-job-portal-backend-f0zm.onrender.com/api/profile/upload-image',
       {
         method: 'POST',
         headers: {
@@ -76,7 +76,7 @@ class Profile extends Component {
       localStorage.getItem('jwt_token')
 
     const response = await fetch(
-      'http://localhost:5000/api/profile/upload-resume',
+      'https://ai-job-portal-backend-f0zm.onrender.com/api/profile/upload-resume',
       {
         method: 'POST',
         headers: {
@@ -106,7 +106,7 @@ class Profile extends Component {
           <img
             src={
               profile.profile_image
-                ? `http://localhost:5000${profile.profile_image}`
+                ? `https://ai-job-portal-backend-f0zm.onrender.com${profile.profile_image}`
                 : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
             }
             alt="Profile"
@@ -158,7 +158,7 @@ class Profile extends Component {
 
             {profile.resume_url && (
               <a
-                href={`http://localhost:5000${profile.resume_url}`}
+                href={`https://ai-job-portal-backend-f0zm.onrender.com${profile.resume_url}`}
                 target="_blank"
                 rel="noreferrer"
                 className="resume-btn"

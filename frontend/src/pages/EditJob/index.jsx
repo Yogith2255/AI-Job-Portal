@@ -262,7 +262,7 @@ class EditJob extends Component {
               <img
                 src={
                   company_logo
-                    ? `http://localhost:5000${company_logo}`
+                    ? `https://ai-job-portal-backend-f0zm.onrender.com${company_logo}`
                     : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
                 }
                 alt="Company Logo"

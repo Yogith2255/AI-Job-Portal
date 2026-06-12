@@ -51,7 +51,7 @@ class SavedJobs extends Component {
           <img
             src={
               job.company_logo
-                ? `http://localhost:5000${job.company_logo}`
+                ? `https://ai-job-portal-backend-f0zm.onrender.com${job.company_logo}`
                 : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
             }
             alt={job.company}

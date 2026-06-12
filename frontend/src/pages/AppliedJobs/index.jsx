@@ -39,7 +39,7 @@ class AppliedJobs extends Component {
           <img
             src={
               application.company_logo
-                ? `http://localhost:5000${application.company_logo}`
+                ? `https://ai-job-portal-backend-f0zm.onrender.com${application.company_logo}`
                 : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
             }
             alt={application.company}
