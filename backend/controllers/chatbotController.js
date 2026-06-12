@@ -36,17 +36,14 @@ const askCareerAssistant = async (
       )
       .join('\n')
 
-    const response =
-      await axios.post(
-        'http://127.0.0.1:8000/career-chat',
-        {
-          question,
-
-          resume_skills: [],
-
-          jobs_context: jobsContext,
-        },
-      )
+    const response = await axios.post(
+  `${process.env.AI_SERVICE_URL}/career-chat`,
+  {
+    question,
+    resume_skills: [],
+    jobs_context: jobsContext,
+  },
+)
 
     res.json(response.data)
   } catch (error) {
