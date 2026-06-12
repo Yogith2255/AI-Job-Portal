@@ -1,0 +1,115 @@
+.create-job-page {
+  min-height: calc(100vh - 80px);
+
+  background-color: #020617;
+
+  display: flex;
+  justify-content: center;
+
+  padding: 40px;
+}
+
+.create-job-card {
+  width: 100%;
+  max-width: 900px;
+
+  background-color: #1e293b;
+
+  padding: 40px;
+
+  border-radius: 20px;
+
+  border: 1px solid #334155;
+}
+
+.create-job-card h1 {
+  text-align: center;
+
+  color: white;
+
+  margin-bottom: 30px;
+}
+
+.create-job-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  color: #cbd5e1;
+
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 14px;
+
+  border: 1px solid #334155;
+
+  border-radius: 10px;
+
+  background-color: #0f172a;
+
+  color: white;
+
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: #3b82f6;
+}
+
+.logo-placeholder {
+  border: 2px dashed #3b82f6;
+
+  border-radius: 12px;
+
+  padding: 25px;
+
+  text-align: center;
+
+  color: #94a3b8;
+}
+
+.create-job-btn {
+  background-color: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  padding: 16px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 16px;
+}
+
+.create-job-btn:hover {
+  background-color: #1d4ed8;
+}
+@media screen and (max-width: 768px) {
+  .create-job-card,
+  .edit-job-card {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .create-job-btn,
+  .edit-job-btn {
+    width: 100%;
+  }
+}

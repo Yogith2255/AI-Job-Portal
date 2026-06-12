@@ -1,0 +1,16 @@
+.venv
+
+backend/node_modules
+frontend/node_modules
+
+backend/.env
+ai-service/.env
+
+backend/database/jobportal.db
+backend/database/jobportal_backup.db
+
+backend/uploads
+
+__pycache__
+
+frontend/dist

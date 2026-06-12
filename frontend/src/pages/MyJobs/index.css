@@ -1,0 +1,62 @@
+.my-jobs-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px;
+}
+
+.my-jobs-page h1 {
+  color: white;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.my-job-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.my-job-company {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.my-job-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: white;
+}
+
+.my-job-company h3 {
+  color: white;
+  margin-bottom: 5px;
+}
+
+.my-job-company p {
+  color: #94a3b8;
+}
+
+.my-job-info {
+  display: flex;
+  gap: 30px;
+  color: white;
+  margin-top: 20px;
+}
+
+.my-job-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.my-job-actions button {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}

@@ -1,0 +1,147 @@
+.applicants-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px;
+}
+
+.applicants-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.applicants-header h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.applicants-header p {
+  color: #94a3b8;
+}
+
+.applicant-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-badge {
+  background: green;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.empty-message {
+  text-align: center;
+  margin-top: 80px;
+}
+.applicant-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.accept-btn {
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.reject-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status-badge.applied {
+  background: #3b82f6;
+  color: white;
+}
+
+.status-badge.accepted {
+  background: #22c55e;
+  color: white;
+}
+
+.status-badge.rejected {
+  background: #ef4444;
+  color: white;
+}
+.resume-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #3b82f6;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.resume-btn:hover {
+  background: #2563eb;
+}
+
+.accept-btn {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reject-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.accept-btn:hover {
+  background: #15803d;
+}
+
+.reject-btn:hover {
+  background: #b91c1c;
+}
+
+.status-badge.accepted {
+  background: #16a34a;
+}
+
+.status-badge.rejected {
+  background: #dc2626;
+}
+
+.status-badge.applied {
+  background: #f59e0b;
+}
