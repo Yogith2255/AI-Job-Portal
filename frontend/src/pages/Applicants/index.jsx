@@ -1,6 +1,7 @@
 import {Component} from 'react'
 
 import {apiRequest} from '../../services/api'
+import {BASE_URL} from '../../constants'
 
 import './index.css'
 
@@ -69,7 +70,7 @@ class Applicants extends Component {
 
 {applicant.resume_url && (
   <a
-  href={`https://ai-job-portal-backend-f0zm.onrender.com${applicant.resume_url}`}
+  href={`${BASE_URL}${applicant.resume_url}`}
   target="_blank"
   rel="noreferrer"
   className="resume-btn"

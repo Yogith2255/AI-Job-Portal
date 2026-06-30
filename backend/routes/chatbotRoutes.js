@@ -8,6 +8,7 @@ const authMiddleware = require(
 
 const {
   askCareerAssistant,
+  getResumeCoaching,
 } = require(
   '../controllers/chatbotController',
 )
@@ -16,6 +17,12 @@ router.post(
   '/',
   authMiddleware,
   askCareerAssistant,
+)
+
+router.post(
+  '/coaching',
+  authMiddleware,
+  getResumeCoaching,
 )
 
 module.exports = router

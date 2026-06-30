@@ -1,6 +1,7 @@
 import {Component} from 'react'
 
 import {apiRequest} from '../../services/api'
+import {BASE_URL} from '../../constants'
 
 import './index.css'
 
@@ -262,7 +263,7 @@ class EditJob extends Component {
               <img
                 src={
                   company_logo
-                    ? `https://ai-job-portal-backend-f0zm.onrender.com${company_logo}`
+                    ? `${BASE_URL}${company_logo}`
                     : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
                 }
                 alt="Company Logo"

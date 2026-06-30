@@ -41,9 +41,20 @@ class Jobs extends Component {
 
     const data = await apiRequest(url)
 
-    this.setState({
-      jobsList: data,
-    })
+    if (Array.isArray(data)) {
+      this.setState({
+        jobsList: data,
+      })
+    } else {
+      this.setState({
+        jobsList: [],
+      })
+      if (data && (data.message === 'Invalid token' || data.message === 'No token provided')) {
+        localStorage.removeItem('jwt_token')
+        localStorage.removeItem('role')
+        window.location.href = '/login'
+      }
+    }
   }
 
   onSearchChange = event => {

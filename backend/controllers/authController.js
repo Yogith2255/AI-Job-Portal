@@ -12,7 +12,7 @@ const registerUser = async (req, res) => {
       })
     }
 
-    const existingUser = db
+    const existingUser = await db
       .prepare('SELECT * FROM users WHERE email = ?')
       .get(email)
 
@@ -24,11 +24,12 @@ const registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const result = db
+    const result = await db
       .prepare(
         `
         INSERT INTO users(name,email,password,role)
         VALUES(?,?,?,?)
+        RETURNING id
       `,
       )
       .run(name, email, hashedPassword, role)
@@ -45,9 +46,9 @@ const registerUser = async (req, res) => {
     })
   }
 }
-const getProfile = (req, res) => {
+const getProfile = async (req, res) => {
   try {
-    const user = db
+    const user = await db
       .prepare(`
         SELECT
           id,
@@ -78,7 +79,7 @@ const loginUser = async (req, res) => {
   try {
     const {email, password} = req.body
 
-    const user = db
+    const user = await db
       .prepare('SELECT * FROM users WHERE email = ?')
       .get(email)
     

@@ -1,6 +1,7 @@
 import {Component} from 'react'
 
 import {apiRequest} from '../../services/api'
+import {BASE_URL} from '../../constants'
 
 import './index.css'
 
@@ -18,9 +19,20 @@ class AppliedJobs extends Component {
       '/applications/my-applications',
     )
 
-    this.setState({
-      applicationsList: data,
-    })
+    if (Array.isArray(data)) {
+      this.setState({
+        applicationsList: data,
+      })
+    } else {
+      this.setState({
+        applicationsList: [],
+      })
+      if (data && (data.message === 'Invalid token' || data.message === 'No token provided')) {
+        localStorage.removeItem('jwt_token')
+        localStorage.removeItem('role')
+        window.location.href = '/login'
+      }
+    }
   }
 
   renderApplications = () => {
@@ -39,7 +51,7 @@ class AppliedJobs extends Component {
           <img
             src={
               application.company_logo
-                ? `https://ai-job-portal-backend-f0zm.onrender.com${application.company_logo}`
+                ? `${BASE_URL}${application.company_logo}`
                 : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
             }
             alt={application.company}

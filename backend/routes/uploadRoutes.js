@@ -25,11 +25,11 @@ router.post(
   '/resume',
   authMiddleware,
   upload.single('resume'),
-  (req, res) => {
+  async (req, res) => {
     const resumeUrl =
       `/uploads/${req.file.filename}`
 
-    db.prepare(`
+    await db.prepare(`
       UPDATE users
       SET resume_url = ?
       WHERE id = ?

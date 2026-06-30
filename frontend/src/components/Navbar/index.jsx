@@ -15,14 +15,19 @@ const Navbar = () => {
     navigate('/login')
   }
 
+  const getHomePath = () => {
+    if (!token) return '/'
+    return role === 'recruiter' ? '/dashboard' : '/jobs'
+  }
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <Link to="/">JobPortal</Link>
+        <Link to={getHomePath()}>JobPortal</Link>
       </div>
 
       <div className="navbar-links">
-        <Link to="/">Home</Link>
+        <Link to={getHomePath()}>Home</Link>
 
         {!token && (
           <>

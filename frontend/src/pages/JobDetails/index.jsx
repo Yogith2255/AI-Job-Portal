@@ -1,6 +1,7 @@
 import {Component} from 'react'
 
 import {apiRequest} from '../../services/api'
+import {BASE_URL} from '../../constants'
 
 import './index.css'
 
@@ -96,7 +97,7 @@ class JobDetails extends Component {
             <div className="job-details-header">
               {jobDetails.company_logo && (
                 <img
-                  src={`https://ai-job-portal-backend-f0zm.onrender.com${jobDetails.company_logo}`}
+                  src={`${BASE_URL}${jobDetails.company_logo}`}
                   alt={
                     jobDetails.company
                   }

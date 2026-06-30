@@ -108,6 +108,8 @@ const App = () => (
         }
       />
 
+
+
       <Route
         path="/applicants/:jobId"
         element={

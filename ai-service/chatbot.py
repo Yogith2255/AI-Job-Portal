@@ -46,3 +46,55 @@ Instructions:
     )
 
     return response.text
+
+
+def get_resume_coaching_feedback(
+    resume_text,
+    resume_skills,
+    jobs_context
+):
+    prompt = f"""
+You are an expert ATS (Applicant Tracking System) optimizer and professional Career Coach.
+Analyze the candidate's resume details and provide a comprehensive feedback report.
+
+RESUME TEXT:
+{resume_text}
+
+RESUME SKILLS:
+{resume_skills}
+
+PORTAL JOBS LIST:
+{jobs_context}
+
+Analyze the resume and return ONLY a valid JSON object matching this structure (do NOT wrap it in markdown code blocks, do not output any surrounding text, return raw JSON string):
+{{
+    "ats_score": 85,
+    "strengths": [
+        "Identified strength 1",
+        "Identified strength 2"
+    ],
+    "improvements": [
+        "Recommendation for improvement 1",
+        "Recommendation for improvement 2"
+    ],
+    "missing_skills_for_jobs": [
+        "Skill - Recommended to match specific job"
+    ],
+    "roadmap_tips": [
+        "Actionable roadmap or learning tip 1",
+        "Actionable roadmap or learning tip 2"
+    ]
+}}
+"""
+
+    response = model.generate_content(
+        prompt
+    )
+
+    content = response.text.strip()
+    if content.startswith("```json"):
+        content = content[7:]
+    if content.endswith("```"):
+        content = content[:-3]
+    content = content.strip()
+    return content

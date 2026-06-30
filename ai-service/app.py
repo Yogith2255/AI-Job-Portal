@@ -6,18 +6,21 @@ class ChatRequest(BaseModel):
     resume_skills: list[str]
     jobs_context: str
 
+
+class CoachingRequest(BaseModel):
+    resume_text: str
+    resume_skills: str
+    jobs_context: str
+
+
 from fastapi import FastAPI, UploadFile, File, Form
 
-from chatbot import get_chat_response
+from chatbot import get_chat_response, get_resume_coaching_feedback
 from job_matcher import calculate_match_score
 from resume_parser import (
     extract_text_from_pdf,
-    extract_skills
-)
-
-from resume_parser import (
-    extract_text_from_pdf,
     extract_skills,
+    parse_resume_with_gemini
 )
 
 app = FastAPI()
@@ -39,11 +42,26 @@ async def parse_resume(
         resume.file
     )
 
-    skills = extract_skills(text)
+    gemini_data = parse_resume_with_gemini(text)
+    
+    if gemini_data:
+        skills = gemini_data.get("skills", [])
+        summary = gemini_data.get("summary", "")
+        experience_summary = gemini_data.get("experience_summary", "")
+        education = gemini_data.get("education", [])
+    else:
+        skills = extract_skills(text)
+        summary = ""
+        experience_summary = ""
+        education = []
 
     return {
         "skills": skills,
-        "total_skills": len(skills)
+        "total_skills": len(skills),
+        "summary": summary,
+        "experience_summary": experience_summary,
+        "education": education,
+        "text": text
     }
 @app.post("/match-job")
 async def match_job(
@@ -98,3 +116,28 @@ async def career_chat(
     return {
         "answer": answer
     }
+
+
+@app.post("/resume-coaching")
+async def resume_coaching(
+    request: CoachingRequest
+):
+    import json
+    feedback_str = get_resume_coaching_feedback(
+        request.resume_text,
+        request.resume_skills,
+        request.jobs_context
+    )
+    try:
+        feedback = json.loads(feedback_str)
+        return feedback
+    except Exception as e:
+        print("Coaching response JSON parse error:", e)
+        return {
+            "ats_score": 75,
+            "strengths": ["Strong core skills list", "Professional formatting"],
+            "improvements": ["Formatting tips could not be processed dynamically. Ensure clear typography."],
+            "missing_skills_for_jobs": [],
+            "roadmap_tips": ["Add projects matching selected job roles."],
+            "raw_response": feedback_str
+        }

@@ -1,10 +1,10 @@
 const db = require('../config/db')
 
-const saveJob = (req, res) => {
+const saveJob = async (req, res) => {
   try {
     const {jobId} = req.body
 
-    const existingSavedJob = db
+    const existingSavedJob = await db
       .prepare(
         `
         SELECT *
@@ -21,7 +21,7 @@ const saveJob = (req, res) => {
       })
     }
 
-    const result = db
+    const result = await db
       .prepare(
         `
         INSERT INTO saved_jobs(
@@ -29,6 +29,7 @@ const saveJob = (req, res) => {
           job_id
         )
         VALUES (?, ?)
+        RETURNING id
       `,
       )
       .run(req.user.id, jobId)
@@ -46,9 +47,9 @@ const saveJob = (req, res) => {
   }
 }
 
-const getSavedJobs = (req, res) => {
+const getSavedJobs = async (req, res) => {
   try {
-    const jobs = db
+    const jobs = await db
       .prepare(
         `
         SELECT
@@ -84,11 +85,11 @@ ORDER BY saved_jobs.id DESC
   }
 }
 
-const removeSavedJob = (req, res) => {
+const removeSavedJob = async (req, res) => {
   try {
     const {id} = req.params
 
-    const savedJob = db
+    const savedJob = await db
       .prepare(
         `
         SELECT *
@@ -110,7 +111,7 @@ const removeSavedJob = (req, res) => {
       })
     }
 
-    db.prepare(
+    await db.prepare(
       `
       DELETE FROM saved_jobs
       WHERE id = ?

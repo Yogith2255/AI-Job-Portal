@@ -43,11 +43,11 @@ class Dashboard extends Component {
 
     const chartData = [
       {
-        name: 'Total Jobs',
+        name: 'Total Portal Jobs',
         value: stats.totalJobs,
       },
       {
-        name: 'Active Jobs',
+        name: 'My Active Jobs',
         value: stats.activeJobs,
       },
       {
@@ -72,12 +72,12 @@ class Dashboard extends Component {
 
         <div className="dashboard-cards">
           <DashboardCard
-            title="Total Jobs"
+            title="Total Portal Jobs"
             value={stats.totalJobs}
           />
 
           <DashboardCard
-            title="Active Jobs"
+            title="My Active Jobs"
             value={stats.activeJobs}
           />
 
@@ -91,10 +91,10 @@ class Dashboard extends Component {
           <DashboardCard
             title="Avg Applications"
             value={
-              stats.totalJobs > 0
+              stats.activeJobs > 0
                 ? (
                     stats.totalApplications /
-                    stats.totalJobs
+                    stats.activeJobs
                   ).toFixed(1)
                 : 0
             }

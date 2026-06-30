@@ -1,6 +1,7 @@
 import {Component} from 'react'
 
 import {apiRequest} from '../../services/api'
+import {BASE_URL} from '../../constants'
 
 import './index.css'
 
@@ -44,7 +45,7 @@ class Profile extends Component {
       localStorage.getItem('jwt_token')
 
     const response = await fetch(
-      'https://ai-job-portal-backend-f0zm.onrender.com/api/profile/upload-image',
+      `${BASE_URL}/api/profile/upload-image`,
       {
         method: 'POST',
         headers: {
@@ -76,7 +77,7 @@ class Profile extends Component {
       localStorage.getItem('jwt_token')
 
     const response = await fetch(
-      'https://ai-job-portal-backend-f0zm.onrender.com/api/profile/upload-resume',
+      `${BASE_URL}/api/profile/upload-resume`,
       {
         method: 'POST',
         headers: {
@@ -106,7 +107,7 @@ class Profile extends Component {
           <img
             src={
               profile.profile_image
-                ? `https://ai-job-portal-backend-f0zm.onrender.com${profile.profile_image}`
+                ? `${BASE_URL}${profile.profile_image}`
                 : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
             }
             alt="Profile"
@@ -158,7 +159,7 @@ class Profile extends Component {
 
             {profile.resume_url && (
               <a
-                href={`https://ai-job-portal-backend-f0zm.onrender.com${profile.resume_url}`}
+                href={`${BASE_URL}${profile.resume_url}`}
                 target="_blank"
                 rel="noreferrer"
                 className="resume-btn"

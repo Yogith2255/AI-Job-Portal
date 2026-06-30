@@ -1,40 +1,43 @@
 const db = require('../config/db')
+const axios = require('axios')
+const FormData = require('form-data')
+const fs = require('fs')
+const path = require('path')
 
-const getProfile = (req, res) => {
+const getProfile = async (req, res) => {
   try {
-    const getProfile = (req, res) => {
-  const user = db
-    .prepare(`
-      SELECT
-        id,
-        name,
-        email,
-        role,
-        profile_image,
-        resume_url,
-        created_at
-      FROM users
-      WHERE id = ?
-    `)
-    .get(req.user.id)
+    const user = await db
+      .prepare(`
+        SELECT
+          id,
+          name,
+          email,
+          role,
+          profile_image,
+          resume_url,
+          skills,
+          resume_text,
+          created_at
+        FROM users
+        WHERE id = ?
+      `)
+      .get(req.user.id)
 
-  res.json(user)
-}
+    res.json(user)
   } catch (error) {
     console.error(error)
-
     res.status(500).json({
       message: 'Server Error',
     })
   }
 }
 
-const updateProfileImage = (req, res) => {
+const updateProfileImage = async (req, res) => {
   try {
     const profileImage =
       `/uploads/${req.file.filename}`
 
-    db.prepare(
+    await db.prepare(
       `
       UPDATE users
       SET profile_image = ?
@@ -56,23 +59,44 @@ const updateProfileImage = (req, res) => {
   }
 }
 
-const updateResume = (req, res) => {
+const updateResume = async (req, res) => {
   try {
     const resumeUrl =
       `/uploads/${req.file.filename}`
+    const resumePath = path.join(__dirname, '..', resumeUrl)
 
-    db.prepare(
+    let skillsString = ''
+    let resumeText = ''
+
+    try {
+      const aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:8000'
+      const formData = new FormData()
+      formData.append('resume', fs.createReadStream(resumePath))
+
+      const response = await axios.post(`${aiServiceUrl}/parse-resume`, formData, {
+        headers: formData.getHeaders(),
+      })
+
+      const skills = response.data.skills || []
+      skillsString = skills.join(', ')
+      resumeText = response.data.text || ''
+    } catch (err) {
+      console.error('AI Resume parsing failed:', err.message)
+    }
+
+    await db.prepare(
       `
       UPDATE users
-      SET resume_url = ?
+      SET resume_url = ?, skills = ?, resume_text = ?
       WHERE id = ?
     `,
-    ).run(resumeUrl, req.user.id)
+    ).run(resumeUrl, skillsString, resumeText, req.user.id)
 
     res.json({
       message:
-        'Resume uploaded successfully',
+        'Resume uploaded and parsed successfully',
       resumeUrl,
+      skills: skillsString,
     })
   } catch (error) {
     console.error(error)

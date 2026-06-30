@@ -1,10 +1,10 @@
 const db = require('../config/db')
 
-const applyForJob = (req, res) => {
+const applyForJob = async (req, res) => {
   try {
     const {jobId} = req.body
 
-    const job = db
+    const job = await db
       .prepare(
         `
         SELECT *
@@ -21,7 +21,7 @@ const applyForJob = (req, res) => {
       })
     }
 
-    const existingApplication = db
+    const existingApplication = await db
       .prepare(
         `
         SELECT *
@@ -38,7 +38,7 @@ const applyForJob = (req, res) => {
       })
     }
 
-    const result = db
+    const result = await db
       .prepare(
         `
         INSERT INTO applications(
@@ -46,6 +46,7 @@ const applyForJob = (req, res) => {
           user_id
         )
         VALUES (?, ?)
+        RETURNING id
       `,
       )
       .run(jobId, req.user.id)
@@ -63,12 +64,12 @@ const applyForJob = (req, res) => {
   }
 }
 
-const updateApplicationStatus = (req, res) => {
+const updateApplicationStatus = async (req, res) => {
   try {
     const {applicationId} = req.params
     const {status} = req.body
 
-    const application = db
+    const application = await db
       .prepare(
         `
         SELECT applications.*, jobs.recruiter_id
@@ -94,7 +95,7 @@ const updateApplicationStatus = (req, res) => {
       })
     }
 
-    db.prepare(
+    await db.prepare(
       `
       UPDATE applications
       SET status = ?
@@ -115,9 +116,9 @@ const updateApplicationStatus = (req, res) => {
   }
 }
 
-const getMyApplications = (req, res) => {
+const getMyApplications = async (req, res) => {
   try {
-    const applications = db
+    const applications = await db
       .prepare(
         `
         SELECT
@@ -154,11 +155,11 @@ const getMyApplications = (req, res) => {
   }
 }
 
-const getJobApplicants = (req, res) => {
+const getJobApplicants = async (req, res) => {
   try {
     const {jobId} = req.params
 
-    const job = db
+    const job = await db
       .prepare(
         `
         SELECT *
@@ -180,7 +181,7 @@ const getJobApplicants = (req, res) => {
       })
     }
 
-    const applicants = db
+    const applicants = await db
       .prepare(
         `
         SELECT

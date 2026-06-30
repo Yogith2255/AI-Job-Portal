@@ -1,4 +1,5 @@
 import {Link} from 'react-router-dom'
+import {BASE_URL} from '../../constants'
 
 import './index.css'
 
@@ -23,124 +24,117 @@ const JobCard = props => {
 
   const formattedSalary =
     salary > 0
-      ? `${salary / 100000} LPA`
+      ? `₹${(salary / 100000).toFixed(1)} LPA`
       : 'Not Disclosed'
 
   const getMatchClass = () => {
     if (match_score >= 80) {
       return 'high-match'
     }
-
     if (match_score >= 50) {
       return 'medium-match'
     }
-
     return 'low-match'
   }
 
   return (
     <div className="job-card">
-      <div className="job-header">
-        <div className="job-company">
-          {company_logo && (
+      <div className="job-card-header">
+        <div className="job-company-info">
+          {company_logo ? (
             <img
-              src={`http://localhost:5000${company_logo}`}
+              src={`${BASE_URL}${company_logo}`}
               alt={company}
               className="company-logo"
             />
+          ) : (
+            <div className="company-logo-fallback">
+              {company ? company.charAt(0).toUpperCase() : 'J'}
+            </div>
           )}
 
-          <div>
-            <h2 className="job-title">
-              {title}
-            </h2>
-
-            <p className="company-name">
-              {company}
-            </p>
+          <div className="title-and-company">
+            <h2 className="job-title">{title}</h2>
+            <p className="company-name">{company}</p>
           </div>
         </div>
 
-        <span className="salary-badge">
-          ₹{formattedSalary}
-        </span>
+        <span className="salary-tag">{formattedSalary}</span>
       </div>
 
-      <div className="job-info">
-        <p>📍 {location}</p>
-
-        <p>💼 {experience}</p>
-
-        <p>🕒 {job_type}</p>
+      <div className="job-meta-pills">
+        <span className="meta-pill">📍 {location}</span>
+        <span className="meta-pill">💼 {experience}</span>
+        <span className="meta-pill">🕒 {job_type}</span>
       </div>
 
       {role === 'jobseeker' && (
-        <>
-          <div
-            className={`match-score ${getMatchClass()}`}
-          >
-            Match Score:{' '}
-            {match_score || 0}%
+        <div className="ats-match-section">
+          <div className="match-score-header">
+            <span className="match-score-title">ATS Match Profile</span>
+            <span className={`match-score-percent ${getMatchClass()}-text`}>
+              {match_score || 0}%
+            </span>
           </div>
 
-          <div className="skills-section">
-            <h4>Matched Skills</h4>
+          <div className="match-score-bar-bg">
+            <div
+              className={`match-score-bar-fill ${getMatchClass()}`}
+              style={{width: `${match_score || 0}%`}}
+            />
+          </div>
 
-            {matched_skills &&
-            matched_skills.length > 0 ? (
-              <div className="skills-list">
-                {matched_skills.map(
-                  skill => (
-                    <span
-                      key={skill}
-                      className="matched-skill"
-                    >
-                      ✓ {skill}
+          <div className="skills-match-grid">
+            <div className="skills-subset">
+              <h5>Matched Skills</h5>
+              {matched_skills && matched_skills.length > 0 ? (
+                <div className="skills-pill-group">
+                  {matched_skills.slice(0, 4).map(skill => (
+                    <span key={skill} className="pill-skill pill-matched">
+                      {skill}
                     </span>
-                  ),
-                )}
-              </div>
-            ) : (
-              <p className="no-skills">
-                No matched skills
-              </p>
-            )}
-          </div>
-
-          <div className="skills-section">
-            <h4>Missing Skills</h4>
-
-            {missing_skills &&
-            missing_skills.length > 0 ? (
-              <div className="skills-list">
-                {missing_skills.map(
-                  skill => (
-                    <span
-                      key={skill}
-                      className="missing-skill"
-                    >
-                      ✗ {skill}
+                  ))}
+                  {matched_skills.length > 4 && (
+                    <span className="pill-skill pill-more">
+                      +{matched_skills.length - 4} more
                     </span>
-                  ),
-                )}
-              </div>
-            ) : (
-              <p className="no-skills">
-                None 🎉
-              </p>
-            )}
+                  )}
+                </div>
+              ) : (
+                <p className="no-skills-msg">None matched</p>
+              )}
+            </div>
+
+            <div className="skills-subset">
+              <h5>Missing Skills</h5>
+              {missing_skills && missing_skills.length > 0 ? (
+                <div className="skills-pill-group">
+                  {missing_skills.slice(0, 4).map(skill => (
+                    <span key={skill} className="pill-skill pill-missing">
+                      {skill}
+                    </span>
+                  ))}
+                  {missing_skills.length > 4 && (
+                    <span className="pill-skill pill-more">
+                      +{missing_skills.length - 4} more
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <p className="no-skills-msg">None missing 🎉</p>
+              )}
+            </div>
           </div>
-        </>
+        </div>
       )}
 
-      <Link to={`/jobs/${id}`}>
-        <button
-          type="button"
-          className="details-btn"
-        >
-          View Details
-        </button>
-      </Link>
+      <div className="job-card-actions">
+        <Link to={`/jobs/${id}`} className="view-details-link">
+          <button type="button" className="details-btn">
+            View Details & Apply
+          </button>
+        </Link>
+      </div>
     </div>
   )
 }

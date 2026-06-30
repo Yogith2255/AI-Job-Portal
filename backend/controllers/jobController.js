@@ -3,7 +3,7 @@ const axios = require('axios')
 const FormData = require('form-data')
 const fs = require('fs')
 const path = require('path')
-const createJob = (req, res) => {
+const createJob = async (req, res) => {
   try {
     const {
       title,
@@ -23,10 +23,11 @@ const createJob = (req, res) => {
       })
     }
 
-    const result = db
+    const result = await db
       .prepare(
         `INSERT INTO jobs (title, company, company_logo, location, salary, description, skills, experience, job_type, recruiter_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         RETURNING id`,
       )
       .run(
         title,
@@ -101,7 +102,7 @@ const getAllJobs = async (req, res) => {
       ORDER BY jobs.created_at DESC
     `
 
-    let jobs = db
+    let jobs = await db
       .prepare(query)
       .all(...params)
 
@@ -110,80 +111,40 @@ const getAllJobs = async (req, res) => {
       return res.json(jobs)
     }
 
-    const user = db
+    const user = await db
       .prepare(`
-        SELECT resume_url
+        SELECT skills
         FROM users
         WHERE id = ?
       `)
       .get(req.user.id)
 
-    if (
-      !user ||
-      !user.resume_url
-    ) {
-      jobs.sort(
-  (a, b) =>
-    b.match_score - a.match_score,
-)
-      return res.json(jobs)
-    }
-
-    const resumePath = path.join(
-      __dirname,
-      '..',
-      user.resume_url
-    )
+    const userSkills = user && user.skills
+      ? user.skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+      : []
 
     for (let job of jobs) {
-      try {
-        const formData = new FormData()
+      const jobSkills = job.skills
+        ? job.skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+        : []
 
-        formData.append(
-          'resume',
-          fs.createReadStream(
-            resumePath
-          )
-        )
-
-        formData.append(
-          'job_skills',
-          job.skills || ''
-        )
-
-        const response =
-          await axios.post(
-            'http://127.0.0.1:8000/match-job',
-            formData,
-            {
-              headers:
-                formData.getHeaders(),
-            }
-          )
-
-        job.match_score =
-          response.data.match_score
-
-        job.matched_skills =
-          response.data.matched_skills
-
-        job.missing_skills =
-          response.data.missing_skills
-      } catch (err) {
-        console.log(
-          'AI Match Error:',
-          err.message
-        )
-
-        job.match_score = 0
-        job.matched_skills = []
-        job.missing_skills = []
+      const matched = jobSkills.filter(s => userSkills.includes(s))
+      const missing = jobSkills.filter(s => !userSkills.includes(s))
+      
+      let score = 0
+      if (jobSkills.length > 0) {
+        score = Math.round((matched.length / jobSkills.length) * 100)
       }
+
+      job.match_score = score
+      job.matched_skills = matched
+      job.missing_skills = missing
     }
+
     jobs.sort(
-  (a, b) =>
-    b.match_score - a.match_score,
-)
+      (a, b) =>
+        b.match_score - a.match_score,
+    )
 
     res.json(jobs)
   } catch (error) {
@@ -195,11 +156,11 @@ const getAllJobs = async (req, res) => {
   }
 }
 
-const getMyJobs = (req, res) => {
+const getMyJobs = async (req, res) => {
   try {
     const recruiterId = req.user.id
 
-    const jobs = db
+    const jobs = await db
       .prepare(
         `SELECT * FROM jobs
          WHERE recruiter_id = ? AND is_active = 1
@@ -218,7 +179,7 @@ const getJobById = async (req, res) => {
   try {
     const {id} = req.params
 
-    const job = db
+    const job = await db
       .prepare(
         `
         SELECT jobs.*, users.name AS recruiter_name
@@ -241,72 +202,35 @@ const getJobById = async (req, res) => {
       return res.json(job)
     }
 
-    const user = db
+    const user = await db
       .prepare(
         `
-        SELECT resume_url
+        SELECT skills
         FROM users
         WHERE id = ?
       `,
       )
       .get(req.user.id)
 
-    if (
-      !user ||
-      !user.resume_url
-    ) {
-      return res.json(job)
+    const userSkills = user && user.skills
+      ? user.skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+      : []
+
+    const jobSkills = job.skills
+      ? job.skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+      : []
+
+    const matched = jobSkills.filter(s => userSkills.includes(s))
+    const missing = jobSkills.filter(s => !userSkills.includes(s))
+    
+    let score = 0
+    if (jobSkills.length > 0) {
+      score = Math.round((matched.length / jobSkills.length) * 100)
     }
 
-    try {
-      const resumePath = path.join(
-        __dirname,
-        '..',
-        user.resume_url,
-      )
-
-      const formData = new FormData()
-
-      formData.append(
-        'resume',
-        fs.createReadStream(
-          resumePath,
-        ),
-      )
-
-      formData.append(
-        'job_skills',
-        job.skills || '',
-      )
-
-      const response =
-        await axios.post(
-          'http://127.0.0.1:8000/match-job',
-          formData,
-          {
-            headers:
-              formData.getHeaders(),
-          },
-        )
-
-      job.match_score =
-        response.data.match_score
-
-      job.matched_skills =
-        response.data.matched_skills
-
-      job.missing_skills =
-        response.data.missing_skills
-    } catch (error) {
-      console.log(
-        'AI Match Error:',
-        error.message,
-      )
-
-      job.match_score = 0
-      job.matched_skills = []
-      job.missing_skills = []
-    }
+    job.match_score = score
+    job.matched_skills = matched
+    job.missing_skills = missing
 
     res.json(job)
   } catch (error) {
@@ -318,11 +242,11 @@ const getJobById = async (req, res) => {
   }
 }
 
-const updateJob = (req, res) => {
+const updateJob = async (req, res) => {
   try {
     const { id } = req.params
 
-    const job = db.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id)
+    const job = await db.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id)
 
     if (!job) {
       return res.status(404).json({ message: 'Job not found' })
@@ -350,7 +274,7 @@ const updateJob = (req, res) => {
       })
     }
 
-    db.prepare(
+    await db.prepare(
       `UPDATE jobs
        SET title = ?, company = ?, company_logo = ?, location = ?,
            salary = ?, description = ?, skills = ?, experience = ?, job_type = ?
@@ -364,11 +288,11 @@ const updateJob = (req, res) => {
   }
 }
 
-const deleteJob = (req, res) => {
+const deleteJob = async (req, res) => {
   try {
     const { id } = req.params
 
-    const job = db.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id)
+    const job = await db.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id)
 
     if (!job) {
       return res.status(404).json({ message: 'Job not found' })
@@ -378,7 +302,7 @@ const deleteJob = (req, res) => {
       return res.status(403).json({ message: 'Access denied' })
     }
 
-    db.prepare(`UPDATE jobs SET is_active = 0 WHERE id = ?`).run(id)
+    await db.prepare(`UPDATE jobs SET is_active = 0 WHERE id = ?`).run(id)
 
     res.json({ message: 'Job deleted successfully' })
   } catch (error) {

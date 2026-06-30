@@ -2,6 +2,7 @@ import {Component} from 'react'
 import {Link} from 'react-router-dom'
 
 import {apiRequest} from '../../services/api'
+import {BASE_URL} from '../../constants'
 
 import './index.css'
 
@@ -17,9 +18,20 @@ class SavedJobs extends Component {
   getSavedJobs = async () => {
     const data = await apiRequest('/saved-jobs')
 
-    this.setState({
-      savedJobsList: data,
-    })
+    if (Array.isArray(data)) {
+      this.setState({
+        savedJobsList: data,
+      })
+    } else {
+      this.setState({
+        savedJobsList: [],
+      })
+      if (data && (data.message === 'Invalid token' || data.message === 'No token provided')) {
+        localStorage.removeItem('jwt_token')
+        localStorage.removeItem('role')
+        window.location.href = '/login'
+      }
+    }
   }
 
   removeSavedJob = async id => {
@@ -51,7 +63,7 @@ class SavedJobs extends Component {
           <img
             src={
               job.company_logo
-                ? `https://ai-job-portal-backend-f0zm.onrender.com${job.company_logo}`
+                ? `${BASE_URL}${job.company_logo}`
                 : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
             }
             alt={job.company}
