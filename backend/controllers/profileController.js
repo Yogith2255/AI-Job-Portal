@@ -70,18 +70,36 @@ const updateResume = async (req, res) => {
 
     try {
       const aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:8000'
-      const formData = new FormData()
-      formData.append('resume', fs.createReadStream(resumePath))
+      
+      let response = null;
+      let retries = 3;
+      
+      while (retries > 0) {
+        try {
+          const formData = new FormData()
+          formData.append('resume', fs.createReadStream(resumePath))
+          
+          response = await axios.post(`${aiServiceUrl}/parse-resume`, formData, {
+            headers: formData.getHeaders(),
+            timeout: 60000 // 60 seconds per try
+          });
+          break; // success
+        } catch (err) {
+          retries--;
+          console.error(`AI Resume parsing attempt failed. Retries left: ${retries}`, err.message);
+          if (retries === 0) throw err;
+          // Wait 2 seconds before retrying to let the AI service wake up
+          await new Promise(res => setTimeout(res, 2000));
+        }
+      }
 
-      const response = await axios.post(`${aiServiceUrl}/parse-resume`, formData, {
-        headers: formData.getHeaders(),
-      })
-
-      const skills = response.data.skills || []
-      skillsString = skills.join(', ')
-      resumeText = response.data.text || ''
+      if (response && response.data) {
+        const skills = response.data.skills || []
+        skillsString = skills.join(', ')
+        resumeText = response.data.text || ''
+      }
     } catch (err) {
-      console.error('AI Resume parsing failed:', err.message)
+      console.error('AI Resume parsing failed completely:', err.message)
     }
 
     await db.prepare(
