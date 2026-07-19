@@ -40,12 +40,15 @@ Instructions:
 - Suggest improvements where needed.
 - Keep answers concise and practical.
 """
+    try:
+        response = model.generate_content(
+            prompt
+        )
 
-    response = model.generate_content(
-        prompt
-    )
-
-    return response.text
+        return response.text
+    except Exception as e:
+        print(f"Gemini chatbot error: {e}")
+        return "I'm sorry, I am currently experiencing high traffic or a temporary issue. Please try asking again in a moment."
 
 
 def get_resume_coaching_feedback(

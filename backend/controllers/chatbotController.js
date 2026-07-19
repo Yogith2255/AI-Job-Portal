@@ -40,14 +40,28 @@ const askCareerAssistant = async (
       ? user.skills.split(',').map(s => s.trim())
       : []
 
-    const response = await axios.post(
-      `${process.env.AI_SERVICE_URL || 'http://localhost:8000'}/career-chat`,
-      {
-        question,
-        resume_skills: userSkills,
-        jobs_context: jobsContext,
-      },
-    )
+    let response = null;
+    let retries = 3;
+    
+    while (retries > 0) {
+      try {
+        response = await axios.post(
+          `${process.env.AI_SERVICE_URL || 'http://localhost:8000'}/career-chat`,
+          {
+            question,
+            resume_skills: userSkills,
+            jobs_context: jobsContext,
+          },
+          { timeout: 60000 }
+        )
+        break; // success
+      } catch (err) {
+        retries--;
+        console.error(`Chatbot AI attempt failed. Retries left: ${retries}`, err.message);
+        if (retries === 0) throw err;
+        await new Promise(res => setTimeout(res, 2000));
+      }
+    }
 
     res.json(response.data)
   } catch (error) {
@@ -87,14 +101,28 @@ const getResumeCoaching = async (req, res) => {
       .map(job => `${job.title}: ${job.skills}`)
       .join('\n')
 
-    const response = await axios.post(
-      `${process.env.AI_SERVICE_URL || 'http://localhost:8000'}/resume-coaching`,
-      {
-        resume_text: user.resume_text,
-        resume_skills: user.skills || '',
-        jobs_context: jobsContext,
-      },
-    )
+    let response = null;
+    let retries = 3;
+    
+    while (retries > 0) {
+      try {
+        response = await axios.post(
+          `${process.env.AI_SERVICE_URL || 'http://localhost:8000'}/resume-coaching`,
+          {
+            resume_text: user.resume_text,
+            resume_skills: user.skills || '',
+            jobs_context: jobsContext,
+          },
+          { timeout: 60000 }
+        )
+        break;
+      } catch (err) {
+        retries--;
+        console.error(`Coaching AI attempt failed. Retries left: ${retries}`, err.message);
+        if (retries === 0) throw err;
+        await new Promise(res => setTimeout(res, 2000));
+      }
+    }
 
     res.json(response.data)
   } catch (error) {
