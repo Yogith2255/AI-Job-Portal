@@ -113,11 +113,13 @@ const getAllJobs = async (req, res) => {
 
     const user = await db
       .prepare(`
-        SELECT skills
+        SELECT skills, resume_url
         FROM users
         WHERE id = ?
       `)
       .get(req.user.id)
+
+    const hasResume = !!(user && user.resume_url && user.skills && user.skills.trim().length > 0)
 
     const userSkills = user && user.skills
       ? user.skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
@@ -139,6 +141,7 @@ const getAllJobs = async (req, res) => {
       job.match_score = score
       job.matched_skills = matched
       job.missing_skills = missing
+      job.has_resume = hasResume
     }
 
     jobs.sort(
@@ -205,12 +208,14 @@ const getJobById = async (req, res) => {
     const user = await db
       .prepare(
         `
-        SELECT skills
+        SELECT skills, resume_url
         FROM users
         WHERE id = ?
       `,
       )
       .get(req.user.id)
+
+    const hasResume = !!(user && user.resume_url && user.skills && user.skills.trim().length > 0)
 
     const userSkills = user && user.skills
       ? user.skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
@@ -231,6 +236,7 @@ const getJobById = async (req, res) => {
     job.match_score = score
     job.matched_skills = matched
     job.missing_skills = missing
+    job.has_resume = hasResume
 
     res.json(job)
   } catch (error) {

@@ -70,61 +70,75 @@ const JobCard = props => {
 
       {role === 'jobseeker' && (
         <div className="ats-match-section">
-          <div className="match-score-header">
-            <span className="match-score-title">ATS Match Profile</span>
-            <span className={`match-score-percent ${getMatchClass()}-text`}>
-              {match_score || 0}%
-            </span>
-          </div>
+          {!jobDetails.has_resume ? (
+            <div className="no-resume-prompt">
+              <span className="match-score-title">ATS Match Profile</span>
+              <p style={{ marginTop: '10px', fontSize: '14px', color: '#9ca3af' }}>We couldn't find parsed skills. Please upload a text-readable resume in your profile to see your ATS Match score.</p>
+              <Link to="/profile" className="view-details-link" style={{ display: 'inline-block', marginTop: '10px' }}>
+                <button type="button" className="details-btn" style={{ padding: '8px 16px', fontSize: '13px' }}>
+                  Go to Profile
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="match-score-header">
+                <span className="match-score-title">ATS Match Profile</span>
+                <span className={`match-score-percent ${getMatchClass()}-text`}>
+                  {match_score || 0}%
+                </span>
+              </div>
 
-          <div className="match-score-bar-bg">
-            <div
-              className={`match-score-bar-fill ${getMatchClass()}`}
-              style={{width: `${match_score || 0}%`}}
-            />
-          </div>
+              <div className="match-score-bar-bg">
+                <div
+                  className={`match-score-bar-fill ${getMatchClass()}`}
+                  style={{width: `${match_score || 0}%`}}
+                />
+              </div>
 
-          <div className="skills-match-grid">
-            <div className="skills-subset">
-              <h5>Matched Skills</h5>
-              {matched_skills && matched_skills.length > 0 ? (
-                <div className="skills-pill-group">
-                  {matched_skills.slice(0, 4).map(skill => (
-                    <span key={skill} className="pill-skill pill-matched">
-                      {skill}
-                    </span>
-                  ))}
-                  {matched_skills.length > 4 && (
-                    <span className="pill-skill pill-more">
-                      +{matched_skills.length - 4} more
-                    </span>
+              <div className="skills-match-grid">
+                <div className="skills-subset">
+                  <h5>Matched Skills</h5>
+                  {matched_skills && matched_skills.length > 0 ? (
+                    <div className="skills-pill-group">
+                      {matched_skills.slice(0, 4).map(skill => (
+                        <span key={skill} className="pill-skill pill-matched">
+                          {skill}
+                        </span>
+                      ))}
+                      {matched_skills.length > 4 && (
+                        <span className="pill-skill pill-more">
+                          +{matched_skills.length - 4} more
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="no-skills-msg">None matched</p>
                   )}
                 </div>
-              ) : (
-                <p className="no-skills-msg">None matched</p>
-              )}
-            </div>
 
-            <div className="skills-subset">
-              <h5>Missing Skills</h5>
-              {missing_skills && missing_skills.length > 0 ? (
-                <div className="skills-pill-group">
-                  {missing_skills.slice(0, 4).map(skill => (
-                    <span key={skill} className="pill-skill pill-missing">
-                      {skill}
-                    </span>
-                  ))}
-                  {missing_skills.length > 4 && (
-                    <span className="pill-skill pill-more">
-                      +{missing_skills.length - 4} more
-                    </span>
+                <div className="skills-subset">
+                  <h5>Missing Skills</h5>
+                  {missing_skills && missing_skills.length > 0 ? (
+                    <div className="skills-pill-group">
+                      {missing_skills.slice(0, 4).map(skill => (
+                        <span key={skill} className="pill-skill pill-missing">
+                          {skill}
+                        </span>
+                      ))}
+                      {missing_skills.length > 4 && (
+                        <span className="pill-skill pill-more">
+                          +{missing_skills.length - 4} more
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="no-skills-msg">None missing 🎉</p>
                   )}
                 </div>
-              ) : (
-                <p className="no-skills-msg">None missing 🎉</p>
-              )}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
         </div>
       )}
 

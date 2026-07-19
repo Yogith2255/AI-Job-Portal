@@ -92,9 +92,12 @@ const updateResume = async (req, res) => {
     `,
     ).run(resumeUrl, skillsString, resumeText, req.user.id)
 
+    const message = skillsString.length > 0 
+      ? 'Resume uploaded and parsed successfully' 
+      : 'Resume uploaded, but we could not extract your skills automatically. Please ensure your resume is text-readable.'
+
     res.json({
-      message:
-        'Resume uploaded and parsed successfully',
+      message,
       resumeUrl,
       skills: skillsString,
     })
