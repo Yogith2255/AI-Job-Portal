@@ -68,30 +68,39 @@ class Profile extends Component {
     if (!file) {
       return
     }
+    
+    this.setState({ isUploadingResume: true })
 
-    const formData = new FormData()
+    try {
+      const formData = new FormData()
 
-    formData.append('resume', file)
+      formData.append('resume', file)
 
-    const token =
-      localStorage.getItem('jwt_token')
+      const token =
+        localStorage.getItem('jwt_token')
 
-    const response = await fetch(
-      `${BASE_URL}/api/profile/upload-resume`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${BASE_URL}/api/profile/upload-resume`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         },
-        body: formData,
-      },
-    )
+      )
 
-    const data = await response.json()
+      const data = await response.json()
 
-    alert(data.message)
+      alert(data.message)
 
-    this.getProfile()
+      this.getProfile()
+    } catch (error) {
+      alert("Failed to upload resume.")
+      console.error(error)
+    } finally {
+      this.setState({ isUploadingResume: false })
+    }
   }
 
   render() {
@@ -146,14 +155,15 @@ class Profile extends Component {
               />
             </label>
 
-            <label className="upload-btn">
-              Upload Resume
+            <label className={`upload-btn ${this.state.isUploadingResume ? 'disabled' : ''}`}>
+              {this.state.isUploadingResume ? 'Analyzing Resume (may take 60s)...' : 'Upload Resume'}
 
               <input
                 type="file"
                 accept=".pdf,.doc,.docx"
                 hidden
                 onChange={this.uploadResume}
+                disabled={this.state.isUploadingResume}
               />
             </label>
 
